@@ -46,10 +46,10 @@ bool reloading = false;
 void setup() {
   Serial.begin(9600);
   servo.attach(9);
-  for(servoPos; servoPos > 0) {
-    servoPos-= 5
+  for(servoPos; servoPos > 0;) {
+    servoPos-= 2;
     servo.write(servoPos);
-    delay(50)
+    delay(50);
   }
   for(int i=0;i<9;i++){
     pinMode(segPin[i], OUTPUT); //digital 2~8번핀 세그먼트
@@ -63,6 +63,8 @@ unsigned long lastExecutionTime = 0;  // 마지막 작업 실행 시간을 저�
 unsigned long interval = 50;        // 작업을 수행할 간격 (50ms)
 
 void loop() {
+  Serial.println(analogRead(A3));
+  Serial.println(check1);
   unsigned long currentTime = millis();
   if (reloading && currentTime - lastExecutionTime >= interval) {
     if(servoPos < 180) {
@@ -71,6 +73,8 @@ void loop() {
     } else {
       digitalWrite(10, HIGH);
       digitalWrite(11, HIGH);
+      check1 = false;
+      check2 = false;
       reloading = false;
     }
     lastExecutionTime = currentTime; 
@@ -87,8 +91,8 @@ void loop() {
   }
   d1=score%10;//1의 자리 변수
   d2=(score-score%10)/10;//10의 자리 변수
-  segOutput(1,d1,1); //1의 자리 세그먼트에 표시
-  segOutput(0,d2,1); //10의 자리 세그먼트에 표시
+  segOutput(1,d1); //1의 자리 세그먼트에 표시
+  segOutput(0,d2); //10의 자리 세그먼트에 표시
   if(check1&&check2&&!reloading) {
     reloading = true;
     digitalWrite(10, LOW);
